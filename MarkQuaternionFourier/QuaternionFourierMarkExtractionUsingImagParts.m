@@ -2,7 +2,7 @@ f = createQuaternion('lena_marked_image.jpg');
 
 image_size = size(f(:,:,:,2));
 Mark = uint8(zeros(32,32));
-delta = 200;
+delta = 150;
 
 P = 1;
 Q = 1;
@@ -11,19 +11,14 @@ for M = 1:8:image_size(1,:)
          Bk = f(M:M+7,N:N+7,:,:);
          Bkt = QuaternionFourierTransformMi_ijk(Bk);
          A = Bkt(:,:,:,1);
+         C = Bkt(:,:,:,2);
+         D = Bkt(:,:,:,3);
+         E = Bkt(:,:,:,4);
          
-         if A(2,2) - 2*delta*round(A(2,2)/(2*delta)) > 0
-             Mark(P,Q) = Mark(P,Q) + 1;
-         end
-         if A(2,3) - 2*delta*round(A(2,3)/(2*delta)) > 0
-             Mark(P,Q+1) = Mark(P,Q+1) + 1;
-         end
-         if A(3,2) - 2*delta*round(A(3,2)/(2*delta)) > 0
-             Mark(P+1,Q) = Mark(P+1,Q) + 1;
-         end
-         if A(3,3) - 2*delta*round(A(3,3)/(2*delta)) > 0
-             Mark(P+1,Q+1) = Mark(P+1,Q+1) + 1;
-         end
+        Mark = extractMarkBlock(A, Mark,delta, P, Q);
+        Mark = extractMarkBlock(C, Mark,delta, P, Q);
+        Mark = extractMarkBlock(D, Mark,delta, P, Q);
+        Mark = extractMarkBlock(E, Mark,delta, P, Q);
          
          
          
@@ -41,13 +36,13 @@ end
 Marki = Mark;
 for i=1:32
     for j=1:32
-        if Mark(i,j) >= 8
+        if Mark(i,j) >= 32
             Mark(i,j) = 1;
         else
             Mark(i,j) = 0;
         end
     end
 end
-Mark =  iarnold(Mark,20);
+Mark =  iarnold(Mark,5);
 imwrite(logical(Mark),'lena_mark.tif');
 imshow(255*Mark);
