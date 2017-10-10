@@ -1,8 +1,8 @@
-f = createQuaternion('lena_marked_image.jpg');
+function QuaternionFourierMarkExtractionUsingImagParts(MarkedImage,delta,arnoldParam,MarkName)
+f = createQuaternion(MarkedImage);
 
 image_size = size(f(:,:,:,2));
 Mark = uint8(zeros(32,32));
-delta = 150;
 
 P = 1;
 Q = 1;
@@ -33,7 +33,6 @@ for M = 1:8:image_size(1,:)
          
     end
 end
-Marki = Mark;
 for i=1:32
     for j=1:32
         if Mark(i,j) >= 32
@@ -43,6 +42,5 @@ for i=1:32
         end
     end
 end
-Mark =  iarnold(Mark,5);
-imwrite(logical(Mark),'lena_mark.tif');
-imshow(255*Mark);
+Mark =  iarnold(Mark,arnoldParam);
+imwrite(logical(Mark),MarkName);

@@ -1,25 +1,12 @@
-f = createQuaternion('lena_color_512.tif');
+function QuaternionFourierMarkUsingImagParts(imageToMark, MarkImage, arnoldParam,delta,MarkedImage)
+f = createQuaternion(imageToMark);
 fr = f;
-temp = imread('unb_mark_32.tif');
+temp = imread(MarkImage);
 
 imwrite(temp, 'Mark_32.tif');
-scrambled_mark = arnold(temp,5);
-figure(1);
-imshow(scrambled_mark);
-
-ia = iarnold(scrambled_mark,5);
-figure(2);
-imshow(ia);
-
-
+scrambled_mark = arnold(temp,arnoldParam);
 
 image_size = size(f(:,:,:,2));
-mark_size = size(scrambled_mark);
-
-num_of_blocks_mark = mark_size(:,1)*mark_size(:,1)/4;
-num_of_blocks_image = image_size(1,1)*image_size(1,2)/64;
-num_of_reps = uint8(num_of_blocks_image / num_of_blocks_mark);
-delta = 150;
 
 P = 1;
 Q = 1;
@@ -58,7 +45,5 @@ for M = 1:8:image_size(1,:)
     end
 end
 Ir = uint8(cat(3,fr(:,:,:,2),fr(:,:,:,3),fr(:,:,:,4)));
-imwrite(Ir, 'lena_marked_image.jpg');
-
-
-figure(1); imshow(uint8(Ir));
+imwrite(Ir, MarkedImage);
+end
