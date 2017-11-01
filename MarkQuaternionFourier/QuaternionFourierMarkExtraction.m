@@ -1,4 +1,4 @@
-function QuaternionFourierMarkExtraction(MarkedImage,delta,arnoldParam,MarkName)
+function QuaternionFourierMarkExtraction(MarkedImage,delta,arnoldParam,MarkName,mi_ACDE)
 
 f = createQuaternion(MarkedImage);
 
@@ -7,6 +7,7 @@ Mark = uint8(zeros(32,32));
 
 P = 1;
 Q = 1;
+if(strcmp(mi_ACDE,'i_A'))
 for M = 1:8:image_size(1,:)
     for N = 1:8:image_size(:,1)
          Bk = f(M:M+7,N:N+7,:,:);
@@ -24,6 +25,27 @@ for M = 1:8:image_size(1,:)
          
     end
 end
+end
+if(strcmp(mi_ACDE,'ijk_A'))
+for M = 1:8:image_size(1,:)
+    for N = 1:8:image_size(:,1)
+         Bk = f(M:M+7,N:N+7,:,:);
+         Bkt = QuaternionFourierTransform(Bk);
+         A = Bkt(:,:,:,1);
+         Mark = extractMarkBlock(A,Mark,delta, P, Q);
+         Q = Q+2;
+         if Q > 32
+             P = P+2;
+             if P>32
+                P = 1;
+             end
+            Q = 1;
+         end   
+         
+    end
+end
+end
+
 for i=1:32
     for j=1:32
         if Mark(i,j) >= 8
